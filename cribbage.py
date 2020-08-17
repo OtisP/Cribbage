@@ -2,21 +2,23 @@ from deck import Deck, Card
 from collections import Counter
 
 class Cribbage(object):
-    # TODO: NOBS
+    """ Find number of points in a cribbage hand """
 
     @staticmethod
     def _findFifteensRec(dp, hand, i, target, path, total):
+        """
+        Helper method just to take a 2D array filled by subset sum, and
+        increment total for each possible 15 that can be made
+        """
         # If we reached end and sum is non-zero. We print
         # p[] only if arr[0] is equal to sun OR dp[0][sum]
         # is true.
         if (i == 0 and target != 0 and dp[1][target]):
             path.append(hand[i])
-            # print(path)
             return total + 2
 
         # If target becomes 0
         if i == 0 and target == 0:
-            # print(path)
             return total + 2
 
         # if the element i IS in the 15
@@ -134,7 +136,7 @@ class Cribbage(object):
 
     @staticmethod
     def findNobs(hand):
-        #NOTE this assumes that the last card in the list was the cut card
+        # NOTE this assumes that the last card in the list was the cut card
         nobs_suit = hand[-1].getSuit()
         for i in range(len(hand)-1):
             card = hand[i]
@@ -191,23 +193,3 @@ class Cribbage(object):
             return highest_max_discard
         # print("Highest avg discard with", highest_avg_discard, "yielding", discard_options_avg[highest_avg_discard])
         return highest_avg_discard
-
-def main():
-    deck = Deck()
-
-    deck.shuffleDeck()
-
-
-    hand = [Card("J", "C"),Card("Q", "H"),Card("Q", "S"),Card("9", "D"),Card("3", "C")]
-
-
-    # print(findFifteens(hand))
-    # print(findPairs(hand))
-    # print(findRuns(hand))
-    # print(findFlush(hand))
-
-    print(Cribbage.findPoints(hand))
-
-
-if __name__ == '__main__':
-    main()

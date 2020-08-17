@@ -1,6 +1,6 @@
 from random import shuffle
 
-suits = ["C", "S", "D", "H"]
+suits = ["S", "H", "D", "C"]
 values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
 def valueToNum(val):
@@ -45,12 +45,31 @@ class Card(object):
         return self.run_num
 
     def __repr__(self):
-        # TODO: make prettier
         return str(self.val) + str(self.suit)
 
     def __str__(self):
-        # TODO: make prettier
-        return str(self.val) + str(self.suit)
+        if self.val in ["1", "J", "Q", "K"]:
+            if self.val == "1":
+                value_word = "Ace"
+            elif self.val == "J":
+                value_word = "Jack"
+            elif self.val == "Q":
+                value_word = "Queen"
+            elif self.val == "K":
+                value_word = "King"
+        else:
+            value_word = str(self.val)
+
+        if self.suit == "C":
+            suit_word = "Clubs"
+        elif self.suit == "H":
+            suit_word = "Hearts"
+        elif self.suit == "S":
+            suit_word = "Spades"
+        elif self.suit == "D":
+            suit_word = "Diamonds"
+
+        return value_word + " of " + suit_word
 
 class Deck(object):
     def __init__(self):
@@ -61,9 +80,9 @@ class Deck(object):
         self.deck = []
         self.dealt = []
         # make all cards
-        for value in values:
-            # of all suits
-            for suit in suits:
+        for suit in suits:
+            for value in values:
+            # of all values
                 self.deck.append(Card(value, suit))
 
     def shuffleDeck(self):
@@ -81,7 +100,6 @@ class Deck(object):
             self.dealt = []
             self.shuffleDeck()
         else:
-            # TODO: Add defensive programming for added cards already in deck
             self.deck.extend(specific_cards)
             for card in specific_cards:
                 self.dealt.remove(card)
@@ -93,8 +111,7 @@ class Deck(object):
         return self.dealt
 
     def __str__(self):
-        # TODO: Make prettier
         to_return = ""
         for card in self.deck:
             to_return += card.getSuit() + card.getVal() + ","
-        return to_return
+        return to_return[:-1]

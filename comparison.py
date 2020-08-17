@@ -10,6 +10,16 @@ class Compare(object):
 
     @staticmethod
     def compareOnce(deck):
+        """
+        Purpose: Run a single simulation of 3 strategies (opt, max, rand)
+                 playing with the same cribbage hand
+        Params: a deck of type Deck
+        Return: list of points:
+                [0] has num points optimal strategy got
+                [1] has num points max strategy got
+                [2] has num points random strategy got
+        """
+
         deck.shuffleDeck()
         hand = Compare.dealHand(deck)
         optimal_hand = hand[:]
