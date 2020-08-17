@@ -54,6 +54,10 @@ class Card(object):
 
 class Deck(object):
     def __init__(self):
+
+        # deck maybe should be implemented as a set, but I don't like how popping
+        # from a set works for a program that's been running for a long time so
+        # we're going to avoid doing that for now
         self.deck = []
         self.dealt = []
         # make all cards
@@ -70,11 +74,17 @@ class Deck(object):
         self.dealt.append(dealt_card)
         return dealt_card
 
-    def shuffleBackIn(self):
+    def shuffleBackIn(self, specific_cards=[]):
         # could make shuffleDeck only call if they say so, but it's fine for now
-        self.deck.extend(self.dealt)
-        self.dealt = []
-        self.shuffleDeck()
+        if not specific_cards:
+            self.deck.extend(self.dealt)
+            self.dealt = []
+            self.shuffleDeck()
+        else:
+            # TODO: Add defensive programming for added cards already in deck
+            self.deck.extend(specific_cards)
+            for card in specific_cards:
+                self.dealt.remove(card)
 
     def getDeck(self):
         return self.deck

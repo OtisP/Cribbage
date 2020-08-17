@@ -100,7 +100,8 @@ class Cribbage(object):
 
     @staticmethod
     def findRuns(hand):
-        run_hand = [card.getRunNum() for card in hand]
+        # could implement a counting sort or something, but for 5 elems feels like overkill
+        run_hand = sorted([card.getRunNum() for card in hand])
         seen = set()
         count = Counter(run_hand)
         total = 0
@@ -132,11 +133,64 @@ class Cribbage(object):
         return total
 
     @staticmethod
+    def findNobs(hand):
+        #NOTE this assumes that the last card in the list was the cut card
+        nobs_suit = hand[-1].getSuit()
+        for i in range(len(hand)-1):
+            card = hand[i]
+            if card.getVal() == "J" and card.getSuit() == nobs_suit:
+                return 1
+        return 0
+
+    @staticmethod
     def findPoints(hand):
         return (Cribbage.findFifteens(hand)
                 + Cribbage.findPairs(hand)
                 + Cribbage.findRuns(hand)
-                + Cribbage.findFlush(hand))
+                + Cribbage.findFlush(hand)
+                + Cribbage.findNobs(hand))
+
+    @staticmethod
+    def bestChoice(deck, hand, get_max=False):
+        # in cribbage you discard two cards, and then some other card is cut from
+        # the deck. You use these 5 cards to make up your hand
+
+        # check for point value if not using card1, index i, and card2, index j
+        # a total of 30 options for 5 cards
+        discard_options_max = {}
+        discard_options_avg = {}
+
+        for i, card1 in enumerate(hand):
+            for j, card2 in enumerate(hand):
+                if i != j:
+                    # for this one discard, the options
+                    avg_hand_val = 0
+                    num_checked = 0
+                    max_hand_val = 0
+                    discarding = [card1, card2]
+                    remaining_cards = [card for card in hand if card not in discarding]
+                    for card in deck.getDeck():
+                        remaining_cards.append(card)
+                        hand_val = Cribbage.findPoints(remaining_cards)
+                        avg_hand_val += hand_val
+
+                        if hand_val > max_hand_val:
+                            max_hand_val = hand_val
+                            discard_options_max[(i, j, card)] = max_hand_val
+                        num_checked += 1
+                        remaining_cards.pop()
+
+                    avg_hand_val /= num_checked
+                    discard_options_avg[(i, j)] = avg_hand_val
+
+        highest_max_discard = max(discard_options_max, key=discard_options_max.get)
+        highest_avg_discard = max(discard_options_avg, key=discard_options_avg.get)
+
+        if get_max:
+            # print("Max discard with", highest_max_discard, "yielding", discard_options_max[highest_max_discard])
+            return highest_max_discard
+        # print("Highest avg discard with", highest_avg_discard, "yielding", discard_options_avg[highest_avg_discard])
+        return highest_avg_discard
 
 def main():
     deck = Deck()
@@ -144,7 +198,7 @@ def main():
     deck.shuffleDeck()
 
 
-    hand = [Card("6", "S"),Card("9", "S"),Card("6", "C"),Card("4", "D"),Card("5", "H")]
+    hand = [Card("J", "C"),Card("Q", "H"),Card("Q", "S"),Card("9", "D"),Card("3", "C")]
 
 
     # print(findFifteens(hand))
