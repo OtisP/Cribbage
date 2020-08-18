@@ -3,10 +3,6 @@ from cribbage import Cribbage
 from random import randrange
 
 class Compare(object):
-    @staticmethod
-    def dealHand(deck):
-        deck.shuffleDeck()
-        return [deck.dealCard() for i in range(6)]
 
     @staticmethod
     def compareOnce(deck):
@@ -21,7 +17,7 @@ class Compare(object):
         """
 
         deck.shuffleDeck()
-        hand = Compare.dealHand(deck)
+        hand = [deck.dealCard() for i in range(6)]
         optimal_hand = hand[:]
         discards = Cribbage.bestChoice(deck, hand)
         larger_num = max(discards[0], discards[1])
@@ -49,3 +45,10 @@ class Compare(object):
 
         deck.shuffleBackIn()
         return [optimal_pt, max_pt, random_pt]
+
+def main():
+    deck = Deck()
+    print(Compare.compareOnce(deck))
+
+if __name__ == '__main__':
+    main()

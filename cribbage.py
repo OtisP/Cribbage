@@ -1,5 +1,6 @@
 from deck import Deck, Card
 from collections import Counter
+from random import sample
 
 class Cribbage(object):
     """ Find number of points in a cribbage hand """
@@ -193,3 +194,9 @@ class Cribbage(object):
             return highest_max_discard
         # print("Highest avg discard with", highest_avg_discard, "yielding", discard_options_avg[highest_avg_discard])
         return highest_avg_discard
+
+    @staticmethod
+    def randomChoice(deck, hand):
+        rand_discards = tuple()
+        discards = sample(range(0, len(hand)), 2)
+        return (discards[0], discards[1])

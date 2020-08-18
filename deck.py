@@ -88,10 +88,21 @@ class Deck(object):
     def shuffleDeck(self):
         shuffle(self.deck)
 
-    def dealCard(self):
-        dealt_card = self.deck.pop()
-        self.dealt.append(dealt_card)
-        return dealt_card
+    def dealCard(self, specific_cards=[]):
+        if not specific_cards:
+            dealt_card = self.deck.pop()
+            self.dealt.append(dealt_card)
+            return dealt_card
+        else:
+            for card in specific_cards:
+                self.dealt.append(card)
+                # find the instance of the "equal" playing card
+                for deck_card in self.deck:
+                    if (deck_card.getSuit() == card.getSuit() and
+                        deck_card.getVal() == card.getVal()):
+                        # if the card is the desired suit and val
+                        self.deck.remove(deck_card)
+            return specific_cards
 
     def shuffleBackIn(self, specific_cards=[]):
         # could make shuffleDeck only call if they say so, but it's fine for now
@@ -113,5 +124,5 @@ class Deck(object):
     def __str__(self):
         to_return = ""
         for card in self.deck:
-            to_return += card.getSuit() + card.getVal() + ","
+            to_return += card.getVal() + card.getSuit() + ","
         return to_return[:-1]
